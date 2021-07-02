@@ -9,7 +9,11 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.status(200).json("OK");
+  res.status(200).json({ text: "Hello From The Server!" });
+});
+
+app.get("/login", (req, res) => {
+  res.status(200).json({ text: "You have been logged in!" });
 });
 
 app.listen("3000", () => {

@@ -39,3 +39,7 @@ node_modules
 #Vs C ode
 
 .vscode
+
+src
+
+build

@@ -7,6 +7,7 @@ using namespace std;
 void login();
 void registr();
 void forgot();
+void authenticateUser();
 
 int main()
 {
@@ -34,7 +35,7 @@ int main()
                 break;
         case 4:
 
-                cout << "Thanks for using this program\nThis program is created by @harsha20599\n\n";
+                cout << "Thanks for using this program\n\n";
                 break;
         default:
                 system("cls");
