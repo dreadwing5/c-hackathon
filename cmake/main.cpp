@@ -7,7 +7,7 @@ using namespace std;
 void login();
 void registr();
 void forgot();
-void authenticateUser();
+void authenticateUser(string name, string password); //Login user
 
 int main()
 {

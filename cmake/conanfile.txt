@@ -1,5 +1,6 @@
 [requires]
 cpr/1.6.2
+nlohmann_json/3.9.1
 
 [generators]
-cmake
+cmake_find_package_multi

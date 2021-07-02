@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(hackathon)
 
+set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
+
+find_package(cpr CONFIG)
+find_package(nlohmann_json CONFIG)
+
 if(CMAKE_VERSION VERSION_LESS 3.0.0)
     include(CheckCXXCompilerFlag)
     check_cxx_compiler_flag(-std=c++11 COMPILER_SUPPORTS_CXX11)
@@ -16,9 +22,7 @@ else()
 endif()
 
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} apitest.cpp)
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake) # Include Conan-generated file
-conan_basic_setup(TARGETS) # Introduce Conan-generated targets
 
-target_link_libraries(${PROJECT_NAME} CONAN_PKG::cpr)
+target_link_libraries(${PROJECT_NAME} cpr::cpr nlohmann_json::nlohmann_json)
