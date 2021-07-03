@@ -14,6 +14,11 @@ app.get("/", (req, res) => {
   res.status(200).json({ text: "Hello From The Server!" });
 });
 
+app.get("/uploads/:id", function (req, res) {
+  const file = `${__dirname}/uploads/${req.params.id}`;
+  res.download(file); // Set disposition and send it.
+});
+
 // //Define Routes
 app.use("/api/faculty", require("./routes/api/faculty"));
 app.use("/api/student", require("./routes/api/student"));

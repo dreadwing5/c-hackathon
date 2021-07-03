@@ -101,4 +101,18 @@ router.post("/upload", (req, res) => {
     }
   });
 });
+
+router.get("/score/:usn", (req, res) => {
+  usn = `"${req.params.usn}"`;
+
+  const sql = `Select score from student where usn=${usn}`;
+
+  connection.query(sql, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(200).send(data[0].score);
+    }
+  });
+});
 module.exports = router;

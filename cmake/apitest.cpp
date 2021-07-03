@@ -13,6 +13,10 @@ void loginStudent();
 void loginFaculty();
 void studentUpload();
 void facultyUpload();
+void getAllAssignment();
+void getAssignment();
+void assignScore();
+void getScore();
 
 int main(int argc, char **argv)
 {
@@ -46,7 +50,10 @@ int main(int argc, char **argv)
                                 cpr::Body{"This is raw POST data"},
                                 cpr::Header{{"Content-Type", "text/plain"}});
     cout << r.status_code << endl; */
-    facultyUpload();
+    // facultyUpload();
+    // getAssignment();
+    // assignScore();
+    getScore();
 }
 
 void registerStudent()
@@ -145,4 +152,72 @@ void facultyUpload()
     fr.wait();
     cpr::Response r = fr.get();
     std::cout << r.text << std::endl;
+}
+
+void getAllAssignment()
+{
+
+    cpr::Response r = cpr::Get(cpr::Url{"http://localhost:3000/api/faculty/assignment"});
+
+    json j_complete = json::parse(r.text);
+
+    for (auto &&i : j_complete)
+    {
+
+        std::string usn = i.value("usn", "oops");
+        std::string name = i.value("name", "oops");
+        std::string link = i.value("link", "oops");
+
+        cout << "USN : " << usn << "\t"
+             << "Name : " << name << "\t"
+             << "Link : " << link << "\t\n";
+
+        cout << endl;
+    }
+}
+
+//get Particalur assignment a student
+
+void getAssignment()
+{
+
+    string usn1 = "12345";
+    cpr::Response r = cpr::Get(cpr::Url{"http://localhost:3000/api/faculty/assignment/" + usn1});
+    json j_complete = json::parse(r.text);
+    std::string usn = j_complete.value("usn", "oops");
+    std::string name = j_complete.value("name", "oops");
+    std::string assignment = j_complete.value("assignment", "oops");
+
+    cout << "USN : " << usn << "\t"
+         << "Name : " << name << "\t"
+         << "Link : " << assignment << "\t\n";
+
+    cout << endl;
+}
+
+void assignScore()
+{
+    string usn = "12345";
+
+    json j2 = {
+        {"Q1", "10"},
+        {"Q2", "8"},
+        {"Q3", "9"},
+        {"Q4", "10"},
+        {"Q5", "8"}};
+
+    cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/faculty/score/" + usn},
+                                           cpr::Body{j2.dump()},
+                                           cpr::Header{{"Content-Type", "application/json"}});
+
+    fr.wait();
+    cpr::Response r = fr.get();
+    std::cout << r.text << std::endl;
+}
+
+void getScore()
+{
+    string usn = "12345";
+    cpr::Response r = cpr::Get(cpr::Url{"http://localhost:3000/api/student/score/" + usn});
+    cout << r.text;
 }

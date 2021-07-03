@@ -87,7 +87,7 @@ router.post("/upload", (req, res) => {
   let { filePath, facultyId } = req.body;
   const fileExt = "" + path.extname(filePath);
   const fileName = uuidv4();
-  const destPath = `./uploads/${fileName}.${fileExt}`;
+  const destPath = `localhost:3000/uploads/${fileName}.${fileExt}`;
   facultyId = `"${facultyId}"`;
 
   fs.copyFile(`${filePath}`, destPath, (err) => {
@@ -109,6 +109,58 @@ router.post("/upload", (req, res) => {
       });
     }
   });
+});
+
+router.get("/assignment", (req, res) => {
+  const sql = `Select * from student Where assignment!='null'`;
+  connection.query(sql, (err, results) => {
+    if (results.length > 0) {
+      let data = [];
+      results?.forEach(({ name, usn, assignment }) => {
+        data.push({
+          usn: usn,
+          name: name,
+          link: "http://" + assignment,
+        });
+      });
+      console.log(data);
+      res.status(200).send(data);
+    } else {
+      res.status(400).json({ text: "No one has submitted their assignment" });
+    }
+  });
+});
+
+router.get("/assignment/:usn", (req, res) => {
+  let usn = `"${req.params.usn}"`;
+  const sql = `Select name,usn,assignment from student Where usn=${usn}`;
+  console.log(sql);
+  connection.query(sql, (err, result) => {
+    if (!err) {
+      console.log(result);
+      res.status(200).send(result[0]);
+    } else {
+      res
+        .status(400)
+        .json({ text: `${req.params.usn} has not submitted their assignment` });
+    }
+  });
+});
+
+router.post("/score/:usn", (req, res) => {
+  let usn = req.params.usn;
+  const data = JSON.stringify(req.body);
+  connection.query(
+    `UPDATE student set score=? Where usn=${usn}`,
+    [data],
+    (err, data) => {
+      if (err) {
+        res.status(500).json({ text: "Server Error" });
+      } else {
+        res.status(200).json({ text: "Successfully Submited Score!" });
+      }
+    }
+  );
 });
 
 module.exports = router;
