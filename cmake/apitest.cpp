@@ -17,6 +17,7 @@ void getAllAssignment();
 void getAssignment();
 void assignScore();
 void getScore();
+void notifyStudent(string id);
 
 int main(int argc, char **argv)
 {
@@ -53,7 +54,8 @@ int main(int argc, char **argv)
     // facultyUpload();
     // getAssignment();
     // assignScore();
-    getScore();
+    // getScore();
+    facultyUpload();
 }
 
 void registerStudent()
@@ -151,7 +153,10 @@ void facultyUpload()
 
     fr.wait();
     cpr::Response r = fr.get();
-    std::cout << r.text << std::endl;
+    json j_complete = json::parse(r.text);
+
+    std::string link = j_complete.value("fileName", "oops");
+    notifyStudent(link);
 }
 
 void getAllAssignment()
@@ -220,4 +225,20 @@ void getScore()
     string usn = "12345";
     cpr::Response r = cpr::Get(cpr::Url{"http://localhost:3000/api/student/score/" + usn});
     cout << r.text;
+}
+
+void notifyStudent(string id)
+{
+
+    cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/faculty/notification/" + id},
+                                           cpr::Header{{"Content-Type", "application/json"}});
+
+    fr.wait();
+    cpr::Response r = fr.get();
+    std::cout << r.text << std::endl;
+}
+
+void getNotificationStudent()
+{
+    cpr::Response r = cpr::Get(cpr::Url{"http://localhost:3000/api/student/notification/" + usn});
 }

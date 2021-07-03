@@ -115,4 +115,12 @@ router.get("/score/:usn", (req, res) => {
     }
   });
 });
+
+router.get("/notification", (req, res) => {
+  const sql = `Select id,message from student`;
+
+  connection.query(sql, (err, results) => {
+    console.log(results);
+  });
+});
 module.exports = router;

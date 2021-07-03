@@ -87,23 +87,24 @@ router.post("/upload", (req, res) => {
   let { filePath, facultyId } = req.body;
   const fileExt = "" + path.extname(filePath);
   const fileName = uuidv4();
-  const destPath = `localhost:3000/uploads/${fileName}.${fileExt}`;
+  const destPath = `./uploads/${fileName}.${fileExt}`;
+  const file = `localhost:3000/uploads/${fileName}${fileExt}`;
   facultyId = `"${facultyId}"`;
 
   fs.copyFile(`${filePath}`, destPath, (err) => {
     if (err) {
+      console.log(err);
       res.status(500).json({ text: "File couldn't be uploaded" });
     } else {
-      const value = `"${destPath}"`;
+      const value = `"${file}"`;
       const sql = `Update faculty Set assignment = ${value} Where faculty_id =${facultyId}`;
-      console.log(sql);
 
       connection.query(sql, (err, result) => {
         if (err) {
           console.error(err);
           res.status(500).json({ text: "File couldn't be uploaded" });
         }
-        res.status(200).json({ text: "Upload Successful!" });
+        res.status(200).send({ fileName });
 
         //Save to database
       });
@@ -161,6 +162,30 @@ router.post("/score/:usn", (req, res) => {
       }
     }
   );
+});
+
+router.post("/notification/:id", (req, res) => {
+  let id = `"localhost:3000/uploads/${req.params.id}.txt"`;
+  let sql = `Select name,upload_date from faculty where assignment=${id}`;
+
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      connection.query(
+        "INSERT INTO faculty_chat SET ? ",
+        {
+          id,
+          message: "Submit Assignment before due",
+        },
+        (err, data) => {
+          if (!err) {
+            res.status(200).json({ text: "Message sent successfully!" });
+          }
+        }
+      );
+    }
+  });
 });
 
 module.exports = router;
