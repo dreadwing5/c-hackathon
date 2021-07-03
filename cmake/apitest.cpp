@@ -11,6 +11,8 @@ void registerStudent();
 void registerFaculty();
 void loginStudent();
 void loginFaculty();
+void studentUpload();
+void facultyUpload();
 
 int main(int argc, char **argv)
 {
@@ -44,8 +46,7 @@ int main(int argc, char **argv)
                                 cpr::Body{"This is raw POST data"},
                                 cpr::Header{{"Content-Type", "text/plain"}});
     cout << r.status_code << endl; */
-    // registerFaculty();
-    loginFaculty();
+    facultyUpload();
 }
 
 void registerStudent()
@@ -111,6 +112,33 @@ void loginFaculty()
         {"password", "1234"}};
 
     cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/faculty/login"},
+                                           cpr::Body{j2.dump()},
+                                           cpr::Header{{"Content-Type", "application/json"}});
+
+    fr.wait();
+    cpr::Response r = fr.get();
+    std::cout << r.text << std::endl;
+}
+
+void studentUpload()
+{
+    json j2 = {{"filePath", "/Users/naveen/development/cpp-hackathon/sample.txt"}, {"usn", "12345"}};
+
+    cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/student/upload"},
+                                           cpr::Body{j2.dump()},
+                                           cpr::Header{{"Content-Type", "application/json"}});
+
+    fr.wait();
+    cpr::Response r = fr.get();
+    std::cout << r.text << std::endl;
+}
+
+void facultyUpload()
+{
+
+    json j2 = {{"filePath", "/Users/naveen/development/cpp-hackathon/sample.txt"}, {"facultyId", "12345"}};
+
+    cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/faculty/upload"},
                                            cpr::Body{j2.dump()},
                                            cpr::Header{{"Content-Type", "application/json"}});
 

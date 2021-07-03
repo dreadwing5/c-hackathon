@@ -1,6 +1,9 @@
 const express = require("express");
 const connection = require("../../configs/DBConnection");
 const router = express.Router();
+const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
+const path = require("path");
 router.post("/", (req, res) => {
   console.log(req.body);
   let { facultyId, name, mailId, password, password2, department } = req.body;
@@ -79,4 +82,33 @@ router.post("/login", (req, res) => {
     }
   );
 });
+
+router.post("/upload", (req, res) => {
+  let { filePath, facultyId } = req.body;
+  const fileExt = "" + path.extname(filePath);
+  const fileName = uuidv4();
+  const destPath = `./uploads/${fileName}.${fileExt}`;
+  facultyId = `"${facultyId}"`;
+
+  fs.copyFile(`${filePath}`, destPath, (err) => {
+    if (err) {
+      res.status(500).json({ text: "File couldn't be uploaded" });
+    } else {
+      const value = `"${destPath}"`;
+      const sql = `Update faculty Set assignment = ${value} Where faculty_id =${facultyId}`;
+      console.log(sql);
+
+      connection.query(sql, (err, result) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ text: "File couldn't be uploaded" });
+        }
+        res.status(200).json({ text: "Upload Successful!" });
+
+        //Save to database
+      });
+    }
+  });
+});
+
 module.exports = router;
