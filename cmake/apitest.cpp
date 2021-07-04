@@ -18,54 +18,175 @@ void getAssignment();
 void assignScore();
 void getScore();
 void notifyStudent(string id);
+void getNotificationStudent();
+
+int studentDashboard()
+{
+    int ch;
+
+    while (1)
+    {
+        cout << "***********************      STUDENT  MENU        *******************************\n\n";
+        cout << "1. View Assignments" << endl;
+        cout << "2. View Notification" << endl;
+        cout << "3. Upload Assignments" << endl;
+        cout << "4. View Score" << endl;
+        cout << "5. Exit" << endl;
+
+        cout
+            << "Enter your Choice: ";
+        cin >> ch;
+        switch (ch)
+        {
+        case 1:
+            cout << "\033[2J\033[1;1H";
+            getAssignment();
+            break;
+
+        case 2:
+            cout << "\033[2J\033[1;1H";
+            getNotificationStudent();
+
+            break;
+
+        case 3:
+            cout << "\033[2J\033[1;1H";
+            studentUpload();
+
+            break;
+
+        case 4:
+            cout << "\033[2J\033[1;1H";
+            getScore();
+            break;
+
+        default:
+            cout << "\033[2J\033[1;1H";
+            return 0;
+        }
+    }
+}
+
+int facultyDashBoard()
+{
+
+    int ch;
+
+    while (1)
+    {
+        cout << "***********************      FACULTY MENU        *******************************\n\n";
+        cout << "1. Upload Assignments" << endl;
+        cout << "2. View Notification" << endl;
+        cout << "3. View All Assignments" << endl;
+        cout << "4. Assign Score" << endl;
+        cout << "5. Exit" << endl;
+
+        cout
+            << "Enter your Choice: ";
+        cin >> ch;
+        switch (ch)
+        {
+        case 1:
+            cout << "\033[2J\033[1;1H";
+            facultyUpload();
+            break;
+
+        case 2:
+            cout << "\033[2J\033[1;1H";
+            cout << "Work in Progress....";
+
+            break;
+
+        case 3:
+            cout << "\033[2J\033[1;1H";
+            getAllAssignment();
+
+            break;
+
+        case 4:
+            assignScore();
+            break;
+
+        default:
+            cout << "\033[2J\033[1;1H";
+            return 0;
+        }
+    }
+}
 
 int main(int argc, char **argv)
 {
-    /* cpr::Response r = cpr::Get(cpr::Url{"http://localhost:3000/api/student"});
-    r.status_code;            // 200
-    r.header["content-type"]; // application/json; charset=utf-8
-    r.text;                   // JSON text string
+    int ch;
+    while (1)
+    {
+        cout << "************************       MENU        *******************************\n\n";
+        cout << "1. Student Login" << endl;
+        cout << "2. Faculty Login" << endl;
+        cout << "3. Student Registration" << endl;
+        cout << "4. Faculty Registration" << endl;
+        cout << "5. Exit" << endl;
 
-    cout << "text" << r.text; */
-    /*  cpr::Response r = cpr::Post(cpr::Url{"localhost:3000/api/student"},
-                                cpr::Body{"This is raw POST data"},
-                                cpr::Header{{"Content-Type", "text/plain"}});
-    cout << r.text << endl; */
+        cout
+            << "Enter your Choice: ";
+        cin >> ch;
+        switch (ch)
+        {
+        case 1:
+            loginStudent();
+            cout << "\033[2J\033[1;1H";
+            studentDashboard();
+            break;
 
-    /*    string name, usn, password, password2;
-    cout << "NAME : ";
-    getline(cin, name);
-    cout << "USN : ";
-    getline(cin, usn);
-    cout << "Password : ";
-    getline(cin, password);
-    cout << "Repeat Password : ";
-    getline(cin, password2);
-    json j2 = {
-        {"name", name},
-        {"usn", usn},
-        {"password", password},
-        {"password2", password2}}; */
+        case 2:
+            loginFaculty();
+            cout << "\033[2J\033[1;1H";
+            facultyDashBoard();
 
-    /*      cpr::Response r = cpr::Post(cpr::Url{"localhost:3000/api/student"},
-                                cpr::Body{"This is raw POST data"},
-                                cpr::Header{{"Content-Type", "text/plain"}});
-    cout << r.status_code << endl; */
-    // facultyUpload();
-    // getAssignment();
-    // assignScore();
-    // getScore();
-    facultyUpload();
+            break;
+
+        case 3:
+            registerStudent();
+            cout << "\033[2J\033[1;1H";
+            studentDashboard();
+            break;
+
+        case 4:
+            registerFaculty();
+            cout << "\033[2J\033[1;1H";
+            facultyDashBoard();
+
+        default:
+            return 0;
+        }
+    }
+}
+
+//Helper Function -->Communicate with server
+void loginStudent()
+{
+    string usn =
+        //Test Data
+        json j2 = {
+            {"usn", "1CR19IS125"},
+            {"password", "12345"}};
+
+    cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/student/login"},
+                                           cpr::Body{j2.dump()},
+                                           cpr::Header{{"Content-Type", "application/json"}});
+
+    fr.wait();
+    cpr::Response r = fr.get();
+    std::cout << r.text << std::endl;
 }
 
 void registerStudent()
 {
     json j2 = {
         {"name", "sachin"},
-        {"usn", "12345"},
+        {"usn", "1CR19IS125"},
         {"department", "ise"},
-        {"password", "1234"},
-        {"password2", "1234"},
+        {"password", "12345"},
+        {"password2", "12345"},
         {"mailid", "sack19is@cmrit.ac.in"}};
 
     cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/student"},
@@ -77,16 +198,31 @@ void registerStudent()
     std::cout << r.text << std::endl;
 }
 
+void loginFaculty()
+{
+    json j2 = {
+        {"facultyId", "12345"},
+        {"password", "12345"}};
+
+    cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/faculty/login"},
+                                           cpr::Body{j2.dump()},
+                                           cpr::Header{{"Content-Type", "application/json"}});
+
+    fr.wait();
+    cpr::Response r = fr.get();
+    std::cout << r.text << std::endl;
+}
+
 void registerFaculty()
 {
 
     //Test Data
     json j2 = {
-        {"name", "sachin"},
+        {"name", "sachin(FACULTY)"},
         {"facultyId", "12345"},
         {"department", "ise"},
-        {"password", "1234"},
-        {"password2", "1234"},
+        {"password", "12345"},
+        {"password2", "12345"},
         {"mailId", "sack19is@cmrit.ac.in"}};
 
     cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/faculty"},
@@ -98,40 +234,9 @@ void registerFaculty()
     std::cout << r.text << std::endl;
 }
 
-void loginStudent()
-{
-    //Test Data
-    json j2 = {
-        {"usn", "12345"},
-        {"password", "1234"}};
-
-    cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/student/login"},
-                                           cpr::Body{j2.dump()},
-                                           cpr::Header{{"Content-Type", "application/json"}});
-
-    fr.wait();
-    cpr::Response r = fr.get();
-    std::cout << r.text << std::endl;
-}
-
-void loginFaculty()
-{
-    json j2 = {
-        {"facultyId", "12345"},
-        {"password", "1234"}};
-
-    cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/faculty/login"},
-                                           cpr::Body{j2.dump()},
-                                           cpr::Header{{"Content-Type", "application/json"}});
-
-    fr.wait();
-    cpr::Response r = fr.get();
-    std::cout << r.text << std::endl;
-}
-
 void studentUpload()
 {
-    json j2 = {{"filePath", "/Users/naveen/development/cpp-hackathon/sample.txt"}, {"usn", "12345"}};
+    json j2 = {{"filePath", "/Users/naveen/development/cpp-hackathon/sample.txt"}, {"usn", "1CR19IS125"}};
 
     cpr::AsyncResponse fr = cpr::PostAsync(cpr::Url{"http://localhost:3000/api/student/upload"},
                                            cpr::Body{j2.dump()},
@@ -186,7 +291,7 @@ void getAllAssignment()
 void getAssignment()
 {
 
-    string usn1 = "12345";
+    string usn1 = "1CR19IS125";
     cpr::Response r = cpr::Get(cpr::Url{"http://localhost:3000/api/faculty/assignment/" + usn1});
     json j_complete = json::parse(r.text);
     std::string usn = j_complete.value("usn", "oops");
@@ -202,7 +307,7 @@ void getAssignment()
 
 void assignScore()
 {
-    string usn = "12345";
+    string usn = "1CR19IS125";
 
     json j2 = {
         {"Q1", "10"},
@@ -218,13 +323,17 @@ void assignScore()
     fr.wait();
     cpr::Response r = fr.get();
     std::cout << r.text << std::endl;
+    if (r.status_code == 200)
+    {
+        cout << "Mark Assigned Successfully!";
+    }
 }
 
 void getScore()
 {
-    string usn = "12345";
+    string usn = "1CR19IS125";
     cpr::Response r = cpr::Get(cpr::Url{"http://localhost:3000/api/student/score/" + usn});
-    cout << r.text;
+    cout << r.text << endl;
 }
 
 void notifyStudent(string id)
@@ -240,5 +349,10 @@ void notifyStudent(string id)
 
 void getNotificationStudent()
 {
+    /*  string usn = "1234";
     cpr::Response r = cpr::Get(cpr::Url{"http://localhost:3000/api/student/notification/" + usn});
+    std::cout << r.text << std::endl; */
+    cout << "Work in Progress";
 }
+
+Indian Coders 1. Sachin Kumar 1CR19IS125 2. Sahaj Kedia 1CR19IS184 3. Swastik Raj Singh 1CR19IS164 4. Shaheer Hasan 1CR19IS400

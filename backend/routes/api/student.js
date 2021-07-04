@@ -79,10 +79,11 @@ router.post("/upload", (req, res) => {
   let { filePath, usn } = req.body;
   const fileExt = "" + path.extname(filePath);
   const fileName = uuidv4();
-  const destPath = `./uploads/${fileName}.${fileExt}`;
+  const destPath = `./uploads/${fileName}${fileExt}`;
+  const file = `localhost:3000/uploads/${fileName}${fileExt}`;
   usn = `"${usn}"`;
 
-  fs.copyFile(`${filePath}`, destPath, (err) => {
+  fs.copyFile(`${filePath}`, file, (err) => {
     if (err) {
       res.status(500).json({ text: "File couldn't be uploaded" });
     } else {
@@ -104,6 +105,7 @@ router.post("/upload", (req, res) => {
 
 router.get("/score/:usn", (req, res) => {
   usn = `"${req.params.usn}"`;
+  console.log("SCORE!");
 
   const sql = `Select score from student where usn=${usn}`;
 
@@ -116,11 +118,11 @@ router.get("/score/:usn", (req, res) => {
   });
 });
 
-router.get("/notification", (req, res) => {
+/* router.get("/notification", (req, res) => {
   const sql = `Select id,message from student`;
 
   connection.query(sql, (err, results) => {
-    console.log(results);
+    res.status(200).res.json({ text: results });
   });
-});
+}); */
 module.exports = router;

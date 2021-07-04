@@ -139,7 +139,7 @@ router.get("/assignment/:usn", (req, res) => {
   connection.query(sql, (err, result) => {
     if (!err) {
       console.log(result);
-      res.status(200).send(result[0]);
+      res.status(200).send(result);
     } else {
       res
         .status(400)
@@ -151,6 +151,7 @@ router.get("/assignment/:usn", (req, res) => {
 router.post("/score/:usn", (req, res) => {
   let usn = req.params.usn;
   const data = JSON.stringify(req.body);
+  console.log(data);
   connection.query(
     `UPDATE student set score=? Where usn=${usn}`,
     [data],
