@@ -22,7 +22,7 @@ else()
 endif()
 
 
-add_executable(${PROJECT_NAME} apitest.cpp)
+add_executable(${PROJECT_NAME} main.cpp student.cpp utill.cpp)
 
 
 target_link_libraries(${PROJECT_NAME} cpr::cpr nlohmann_json::nlohmann_json)
